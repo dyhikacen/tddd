@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Design tokens for Mamny (Manajemen Uang Kos)
+/// Design tokens for HoMny (Manajemen Uang Kos)
 /// Flat Minimalist design system without gradients to prevent visual fatigue.
 class AppColors {
   AppColors._();

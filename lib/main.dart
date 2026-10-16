@@ -5,20 +5,23 @@ import 'screens/dashboard_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MamnyApp());
+  runApp(const HoMnyApp());
 }
 
-/// Root application widget for Mamny (Manajemen Uang Kos).
-class MamnyApp extends StatefulWidget {
+/// Root application widget for HoMny (Manajemen Uang Kos).
+class HoMnyApp extends StatefulWidget {
   final BudgetProvider? provider;
 
-  const MamnyApp({super.key, this.provider});
+  const HoMnyApp({super.key, this.provider});
 
   @override
-  State<MamnyApp> createState() => _MamnyAppState();
+  State<HoMnyApp> createState() => _HoMnyAppState();
 }
 
-class _MamnyAppState extends State<MamnyApp> {
+/// Backwards compatibility alias for tests and legacy references
+typedef MamnyApp = HoMnyApp;
+
+class _HoMnyAppState extends State<HoMnyApp> {
   late final BudgetProvider _budgetProvider;
 
   @override
@@ -40,7 +43,7 @@ class _MamnyAppState extends State<MamnyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Manajemen Uang Kos',
+      title: 'HoMny',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: DashboardScreen(provider: _budgetProvider),
