@@ -1,0 +1,59 @@
+name: Build & Release Flutter APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    tags:
+      - 'v*' # Otomatis membuat Release jika kamu push tag versi (misal: v1.0.0)
+  workflow_dispatch: # Memungkinkan kamu klik tombol "Run workflow" secara manual di tab Actions
+
+permissions:
+  contents: write # Wajib agar GitHub Actions diizinkan membuat Release dan mengunggah APK
+
+jobs:
+  build-android:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: 3. Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: 4. Install Dependencies
+        run: flutter pub get
+
+      - name: 5. Build APK Release (Split Per ABI & Universal)
+        # --no-tree-shake-icons ditambahkan untuk mencegah error icon font saat build release
+        run: flutter build apk --release --no-tree-shake-icons
+
+      - name: 6. Upload APK ke Artifacts (Bisa didownload di halaman summary Actions)
+        uses: actions/upload-artifact@v4
+        with:
+          name: aplikasi-manajemen-kos-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+      - name: 7. Buat GitHub Release Otomatis
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: "Release Build #${{ github.run_number }}"
+          body: |
+            Build otomatis APK Release untuk Aplikasi Manajemen Uang Kos.
+            Silakan unduh file **app-release.apk** di bawah ini untuk langsung diinstal di HP Android.
+          files: build/app/outputs/flutter-apk/app-release.apk
+          draft: false
+          prerelease: false
